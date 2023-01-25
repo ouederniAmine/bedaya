@@ -51,6 +51,12 @@ const Sidebar = () => {
               <span>questions</span>
             </li>
           </Link>
+          <Link to="/variables" style={{ textDecoration: "none" }}>
+            <li>
+              <StoreIcon className="icon" />
+              <span>Variables</span>
+            </li>
+          </Link>
          
           <br></br>
           <br></br>

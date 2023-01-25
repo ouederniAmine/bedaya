@@ -3,10 +3,7 @@ import { signupFields } from "../../constants/formFields"
 import FormAction from "./FormAction";
 import Input from "./Input";
 import React, { useCallback } from "react";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
-import ReactPasswordStrength from "react-password-strength";
-import app from "../../services/firebase";
 import authService from '../../services/auth.service';
 const fields=signupFields;
 let fieldsState={};

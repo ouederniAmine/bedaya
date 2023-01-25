@@ -1,4 +1,3 @@
-import { getAuth } from "firebase/auth";
 import { Outlet } from 'react-router-dom';
 import React from 'react';
 import LoginPage  from '../pages/Login';

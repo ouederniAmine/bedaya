@@ -1,17 +1,17 @@
-import "./Questionslist.css"
+import "./VariablesList.css"
 import Sidebar from "../../components/sidebar/sidebar"
 import Navbar from "../../components/navbar/navbar"
-import QuestionTable from "../../components/questionTable/questionTable"
-const Questionslist = () => {
+import VariableTable from "../../components/variableTable/variableTable"
+const VariablesList = () => {
   return (
     <div className="list">
       <Sidebar/>
       <div className="listContainer">
         <Navbar/>
-        <QuestionTable />
+        <VariableTable/>
       </div>
     </div>
   )
 }
 
-export default Questionslist
+export default VariablesList
