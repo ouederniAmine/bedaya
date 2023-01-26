@@ -51,7 +51,7 @@ const VariableTable = (props) => {
       renderCell: (params) => {
         return (
           <div className="cellAction">
-            <Link to={"edit"} style={{ textDecoration: "none" }}>
+            <Link to={"edit/"+ params.row.id} style={{ textDecoration: "none" }}>
               <div className="viewButton">Edit</div>
             </Link>
             <div
@@ -81,7 +81,7 @@ const VariableTable = (props) => {
         columns={userColumns.concat(actionColumn)}
         pageSize={9}
         rowsPerPageOptions={[9]}
-        checkboxSelection
+        checkboxSelection     
       />
     </div>
   );

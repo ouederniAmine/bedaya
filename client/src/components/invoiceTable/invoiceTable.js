@@ -5,38 +5,81 @@ import React from "react";
 import { useState  , useEffect} from "react";
 import axios from "axios";
 const InvoiceTable = (props) => {
-  const [data, setData] = useState({});
+  const [data, setData] = useState({
+    id:0,
+    name:"", 
+    phone:"",
+    date:"",
+    pdflink:""
+  });
 
-  // get data from server
   useEffect(() => {
+    let arr =[]
+
     axios
       .get("http://localhost:3001/api/invoices")
       .then((res) => {
         setData(res.data);
+        })
+
+      .catch((err) => {
+        console.log(err);
+      });
+      //map all the element of data state
+      
+      //left everything here!!!
+      
+      axios
+      .get("http://localhost:3001/api/clients")
+      .then((res) => {
+        console.log(res.data);
+        let newData = {
+          id:0,
+          name:"", 
+          phone:2,
+          date:"",
+          pdflink:""
+        }
+        res.data.map(element => {
+          for(let i = 0 ; i< res.data.length ; i++){
+            if (res.data[i].id === element.clientid){
+              setData(data.map((row) => ({ ...row, name: res.data[i].name })));
+            }
+          }
+          
+        });
+        setData(newData)
+        console.log(newData)
       })
       .catch((err) => {
         console.log(err);
       });
+
   }, []);
 
   const userColumns = [
     { field: "id", headerName: "ID", width: 70 },
     
     {
-      field: "clientName",
+      field: "name",
       headerName: "Client Name",
       width: 230,
     },
   
     {
-      field: "Client Phone",
-      headerName: "Choice",
-      width: 100,
+      field: "phone",
+      headerName: "Phone",
+      width: 200,
+    },
+    {
+      field: "date",
+      headerName: "Created on",
+      width: 200,
     },
     {
       field: "pdfLink",
       headerName: "PDF Link",
-      width: 100,
+      width: 200,
     }
    
   ];

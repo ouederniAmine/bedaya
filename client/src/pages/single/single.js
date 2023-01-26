@@ -12,13 +12,12 @@ const Single = () => {
           <div className="left">
             <h1 className="title">Invoice Informations</h1>
             <div className="item">
-              <img
-                src="https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260"
-                alt=""
-                className="itemImg"
-              />
+              
               <div className="details">
-                <h1 className="itemTitle">Jane Doe</h1>
+              <div className="detailItem">
+                  <span className="itemKey">Client Name:</span>
+                  <span className="itemValue">janedoe@gmail.com</span>
+                </div>
                 <div className="detailItem">
                   <span className="itemKey">Email:</span>
                   <span className="itemValue">janedoe@gmail.com</span>
@@ -37,6 +36,7 @@ const Single = () => {
                   <span className="itemKey">Country:</span>
                   <span className="itemValue">USA</span>
                 </div>
+                <button className="linkbu">PDF link</button>
               </div>
             </div>
           </div>

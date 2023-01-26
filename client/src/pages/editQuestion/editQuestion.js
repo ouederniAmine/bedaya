@@ -1,11 +1,11 @@
-import "./new.css";
+import "./editQuestion.css";
 import Sidebar from "../../components/sidebar/sidebar";
 import Navbar from "../../components/navbar/navbar";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import { useState, useEffect } from "react";
 import SearchBar from "../../components/searchBar/searchBar";
-const New = ({ inputs, title }) => {
+const EditQuestion = ({ inputs, title }) => {
   // get data from variable api endpoint
   const [data, setData] = useState([{ text: "loading" }]);
   const [value1, setValue1] = useState("");
@@ -115,4 +115,4 @@ const New = ({ inputs, title }) => {
   );
 };
 
-export default New;
+export default EditQuestion;

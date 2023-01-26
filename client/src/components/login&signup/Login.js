@@ -30,7 +30,7 @@ export default function Login(){
         authService.login(loginState.email, loginState.password)
   .then((e) => {
     console.log("login success", e);
-    navigate("/");
+    navigate("/app");
 
   })
   .catch((error) => {
