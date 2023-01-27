@@ -5,13 +5,14 @@ import "./Calculator.css"
 import axios from "axios";
 const Form = () => {
     const [data, setData] = useState([{}])
+    const [formData, setFormData] = useState(0);
     useEffect(() => {
         axios
             .get("http://localhost:3001/api/question")
             .then((res) => {
                 setData(res.data);
             })
-        })
+        } , [])
     return (
 
 <div class="flex items-center justify-center p-12">
@@ -21,13 +22,14 @@ const Form = () => {
 
     <form action="https://formbold.com/s/FORM_ID" method="POST">
         {data.map((item) => {
+          console.log(data.length )
             return (
                 <div class="mb-5">
                 <label
                   for="guest"
                   class="mb-3 block text-base font-medium text-[#07074D]"
                 >
-                ساحة الحوائط:
+               {item.text}
                 </label>
                 <input
                   type="number"

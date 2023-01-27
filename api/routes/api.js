@@ -384,8 +384,9 @@ router.delete('/invoice/:invoiceid', async (req, res) => {
 router.post('/variable', async (req, res) => {
     try {
         // insert into table variable the values of columns : name, factorid, value
-        const {name, var1id, value , unitid, operationtype , var2id} = req.body;
-        const query = `INSERT INTO variable (name, value, unitid) VALUES ('${name}', ${value} , ${unitid})`;
+        const {name, var1id,   unitid, operationtype , var2id} = req.body;
+        console.log(name , var1id,   unitid, operationtype , var2id);
+        const query = `INSERT INTO variable (name, value, unitid) VALUES ('${name}', ${0} , ${unitid})`;
         const result = await client
         .query
         (query);

@@ -13,10 +13,13 @@ const NewVar = ({ inputs, title }) => {
   const [value1, setValue1] = useState("");
   const [value2, setValue2] = useState("");
   const [value3, setValue3] = useState("");
+  const [var1name , setVar1name] = useState([{name: "loading"}]);
+  const [var2name , setVar2name] = useState([{name: "loading"}]);
+  const [unitname , setUnitname] = useState([{name: "loading"}]);
   //state of var name
   const [varname, setVarname] = useState("");
   //state of operation type
-  const [operationtype, setOperationtype] = useState("");
+  const [operationtype, setOperationtype] = useState("+");
   const onChange = (event , choix) => {
     if (choix == 1) {
 
@@ -45,6 +48,29 @@ const NewVar = ({ inputs, title }) => {
   };
   useEffect(() => {
     axios
+      .get("http://localhost:3001/api/variable")
+      .then((res) => {
+        setVar1name(res.data); 
+        setVar2name(res.data);
+        
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/api/unit")
+      .then((res) => {
+        setUnitname(res.data);
+        
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+  useEffect(() => {
+    axios
       .get("http://localhost:3001/api/fullChoice")
       .then((res) => {
         setData(res.data); 
@@ -59,23 +85,24 @@ const NewVar = ({ inputs, title }) => {
     console.log(e.target);
     console.log("form submitted");
     //get id from data where name = unitname
-    const unitid = data.find((element) => element.unitname == value3).unitid;
-    const var2id = data.find((element) => element.variablename == value2).unitid;
-    const var1id = data.find((element) => element.variablename == value1).unitid;
+    const unitid = unitname.find((element) => element.name == value3).id;
+    const var2id = var2name.find((element) => element.name == value2).id;
+    const var1id = var1name.find((element) => element.name == value1).id;
 
 
     const variable = {
       name:varname,
       value: 0,
       var1id: var1id,
+      unitid: unitid,
       var2id: var2id,
       operationtype: operationtype,
-      unitid: unitid,
     };
     axios
       .post("http://localhost:3001/api/variable", variable)
       .then((res) => {
         console.log(res);
+        
         navigate("/variables");
       })
       .catch((err) => {
@@ -91,7 +118,7 @@ const NewVar = ({ inputs, title }) => {
       <div className="newContainer">
         <Navbar />
         <div className="top">
-          <h1>{title}</h1>
+          <h1>Create your new variable</h1>
         </div>
         <div className="bottom">
           
@@ -122,13 +149,13 @@ const NewVar = ({ inputs, title }) => {
         <div className="dropdown">
           {
           
-          data
+          var1name
             .filter((item) => {
               console.log(item);
               console.log(value1);
               const searchTerm = value1.toLowerCase();
               console.log(item);
-              const fullName = item.variablename.toLowerCase();
+              const fullName = item.name.toLowerCase();
               console.log(fullName);
 
               return (
@@ -140,11 +167,11 @@ const NewVar = ({ inputs, title }) => {
             .slice(0, 10)
             .map((item ,i) => (
               <div
-                onClick={() => onSearch(item.variablename ,1)}
+                onClick={() => onSearch(item.name ,1)}
                 className="dropdown-row"
                 key={i}
               >
-                {item.variablename}
+                {item.name}
               </div>
             ))}
         </div>
@@ -155,10 +182,10 @@ const NewVar = ({ inputs, title }) => {
           <input type="text" value={value2} onChange={(e)=>onChange(e,2)} />
         </div>
         <div className="dropdown">
-          {data
+          {var2name
             .filter((item) => {
               const searchTerm = value2.toLowerCase();
-              const fullName = item.variablename.toLowerCase();
+              const fullName = item.name.toLowerCase();
               console.log(fullName);
 
               return (
@@ -170,11 +197,11 @@ const NewVar = ({ inputs, title }) => {
             .slice(0, 10)
             .map((item ,i) => (
               <div
-                onClick={() => onSearch(item.variablename,2)}
+                onClick={() => onSearch(item.name,2)}
                 className="dropdown-row"
                 key={i}
               >
-                {item.variablename}
+                {item.name}
               </div>
             ))}
         </div>
@@ -186,10 +213,12 @@ const NewVar = ({ inputs, title }) => {
           <input type="text" value={value3} onChange={(e)=>onChange(e,3)} />
         </div>
         <div className="dropdown">
-          {data
+          {unitname
             .filter((item) => {
+              console.log(item);
+              console.log(value3);
               const searchTerm = value3.toLowerCase();
-              const fullName = item.unitname.toLowerCase();
+              const fullName = item.name.toLowerCase();
               console.log(fullName);
 
               return (
@@ -201,11 +230,11 @@ const NewVar = ({ inputs, title }) => {
             .slice(0, 10)
             .map((item ,i) => (
               <div
-                onClick={() => onSearch(item.unitname,3)}
+                onClick={() => onSearch(item.name,3)}
                 className="dropdown-row"
                 key={i}
               >
-                {item.unitname}
+                {item.name}
               </div>
             ))}
         </div>

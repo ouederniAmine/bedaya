@@ -10,6 +10,8 @@ const NewChoice = ({ inputs, title }) => {
   // get data from variable api endpoint
   const [data, setData] = useState([{ unitname: "loading"  , variablename: "loading"}]);
   const [unit, setUnit] = useState("");
+  const [unitName , setUnitName] = useState([{ name: "loading"  , variablename: "loading"}]);
+  const [variableName , setVariableName] = useState([{ name: "loading"  , variablename: "loading"}]);
   const [variable, setVariable] = useState("");
   const [choiceName, setChoiceName] = useState("");
   const [choicePrice, setChoicePrice] = useState(0);
@@ -34,9 +36,20 @@ const NewChoice = ({ inputs, title }) => {
   };
   useEffect(() => {
     axios
-      .get("http://localhost:3001/api/fullChoice")
+      .get("http://localhost:3001/api/variable")
       .then((res) => {
-        setData(res.data); 
+        setVariableName(res.data); 
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/api/unit")
+      .then((res) => {
+        setUnitName(res.data); 
         console.log(res.data);
       })
       .catch((err) => {
@@ -54,15 +67,16 @@ const NewChoice = ({ inputs, title }) => {
     //get the id of the unit and variable from data
     let unitid;
     let variableid;
-    for (let i = 0; i < data.length; i++) {
-      if (data[i].unitname === unit ) {
-        unitid = data[i].unitid;
+    for (let i = 0; i < unitName.length; i++) {
+      if (unitName[i].name === unit ) {
+        unitid = unitName[i].id;
       }
-      if (data[i].variablename === variable) {
-        variableid = data[i].variableid;
+      console.log(variableName[i]);
+      if (variableName[i].name == variable) {
+        variableid = variableName[i].id;
       }
     }
-     console.log(unitid);
+     console.log(unitid," unitid");
 
     
     
@@ -117,10 +131,11 @@ const NewChoice = ({ inputs, title }) => {
           <input type="text" value={unit} onChange={(e)=>onChange(e,1)} />
         </div>
         <div className="dropdown">
-          {data
+          {unitName
             .filter((item) => {
+              console.log(item);
               const searchTerm = unit.toLowerCase();
-              const fullName = item.unitname.toLowerCase();
+              const fullName = item.name.toLowerCase();
               console.log(fullName);
 
               return (
@@ -132,11 +147,11 @@ const NewChoice = ({ inputs, title }) => {
             .slice(0, 10)
             .map((item ,i) => (
               <div
-                onClick={() => onSearch(item.unitname ,1)}
+                onClick={() => onSearch(item.name ,1)}
                 className="dropdown-row"
                 key={i}
               >
-                {item.unitname}
+                {item.name}
               </div>
             ))}
         </div>
@@ -147,10 +162,10 @@ const NewChoice = ({ inputs, title }) => {
           <input type="text" value={variable} onChange={(e)=>onChange(e,2)} />
         </div>
         <div className="dropdown">
-          {data
+          {variableName
             .filter((item) => {
               const searchTerm = variable.toLowerCase();
-              const fullName = item.variablename.toLowerCase();
+              const fullName = item.name.toLowerCase();
               console.log(fullName);
 
               return (
@@ -162,11 +177,11 @@ const NewChoice = ({ inputs, title }) => {
             .slice(0, 10)
             .map((item ,i) => (
               <div
-                onClick={() => onSearch(item.variablename,2)}
+                onClick={() => onSearch(item.name,2)}
                 className="dropdown-row"
                 key={i}
               >
-                {item.variablename}
+                {item.name}
               </div>
             ))}
         </div>

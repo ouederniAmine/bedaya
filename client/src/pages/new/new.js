@@ -31,14 +31,20 @@ const New = ({ inputs, title }) => {
     }
     //push to the state choices
     setChoices([...choices, {name : searchTerm , id:choiceid}]);
-
-
-    
-
-    
     // our api to fetch the search result
     console.log("search ", searchTerm);
   };
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/api/choice")
+      .then((res) => {
+        setData(res.data); 
+        
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
   useEffect(() => {
     axios
       .get("http://localhost:3001/api/choice")
