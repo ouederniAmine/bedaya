@@ -330,7 +330,7 @@ router.delete('/factor/:factorid', async (req, res) => {
 router.delete('/question/:questionid', async (req, res) => {
     try {
         const {questionid} = req.params;
-        const query = `DELETE FROM question WHERE questionid = '${questionid}'`;
+        const query = `DELETE FROM question WHERE id = '${questionid}'`;
         const result = await client
         .query
         (query);
@@ -345,7 +345,7 @@ router.delete('/question/:questionid', async (req, res) => {
 router.delete('/invoice/:invoiceid', async (req, res) => {
     try {
         const {invoiceid} = req.params;
-        const query = `DELETE FROM invoice WHERE invoiceid = '${invoiceid}'`;
+        const query = `DELETE FROM invoice WHERE id = '${invoiceid}'`;
         const result = await client
         .query
         (query);

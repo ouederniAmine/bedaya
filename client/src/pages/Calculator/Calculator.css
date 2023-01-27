@@ -1,0 +1,11 @@
+
+html{
+    direction: rtl;
+    text-align: right;
+}
+#head{
+    font-size: 30px;
+    font-weight: 600;
+    color: #333;
+    margin: 20px 0;
+}
