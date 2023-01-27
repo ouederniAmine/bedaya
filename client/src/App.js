@@ -16,6 +16,7 @@ import NewChoice from './pages/NewChoice/NewChoice';
 import HomePage from './pages/Home';
 import Single from './pages/single/single';
 import NewVar from "./pages/NewVar/NewVar"
+import NewUnit from "./pages/NewUnit/NewUnit"
 import {userInputs} from './assets/formsource';
 import Calculator from './pages/Calculator/Calculator';
 import PrivateRoute from './services/PrivateRoute';
@@ -32,7 +33,11 @@ export default function App() {
           <Route path="/" element={<Calculator />} />
           <Route path="users">
               <Route index element={<UserList />} />
-              <Route path=":userId" element={<Single />} /></Route>   
+              <Route path=":userId" element={<Single />} /></Route>  
+              <Route
+                path="NewUnit"
+                element={<NewUnit inputs={userInputs} title="Add New Unit" />}
+              /> 
               <Route path="questions">
               <Route index element={<Questionslist />} />
               <Route
@@ -48,6 +53,7 @@ export default function App() {
                 element={<NewChoice inputs={userInputs} title="Add New Choice" />}
               />
               <Route path="variables">
+             
               <Route index element={<Variableslist />} />
               <Route
                 path="edit/:variableId"

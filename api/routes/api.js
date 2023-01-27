@@ -128,10 +128,21 @@ router.put('/question', async (req, res) => {
     }
 });
 //delete from question table
-router.delete('/question', async (req, res) => {
+router.delete('/question/:id', async (req, res) => {
     try {
         // delete from table question the values of columns : text
-        const {id} = req.body;
+        //get the id from the
+        const {id} = req.params;
+        //update the questionid with null in each choice table with the question id
+        const query1 = `UPDATE choice SET questionid = null WHERE questionid = '${id}'`;
+        const result1 = await client
+        .query
+        (query1);
+                //update the questionid with null in each response table with the question id
+        const query2 = `UPDATE response SET questionid = null WHERE questionid = '${id}'`;
+        const result2 = await client
+        .query
+        (query2);
         const query = `DELETE FROM question WHERE id = '${id}'`;
         const result = await client
         .query
@@ -299,7 +310,12 @@ router.put('/operation/:resultid', async (req, res) => {
 router.delete('/variable/:variableid', async (req, res) => {
     try {
         const {variableid} = req.params;
-        const query = `DELETE FROM variable WHERE variableid = '${variableid}'`;
+        //update the variableid with null in each choice table with the question id
+        const query3 = `UPDATE choice SET variableid = null WHERE variableid = '${variableid}'`;
+        const result3 = await client
+        .query
+        (query3);
+        const query = `DELETE FROM variable WHERE id = '${variableid}'`;
         const result = await client
         .query
         (query);
@@ -341,18 +357,24 @@ router.delete('/question/:questionid', async (req, res) => {
     }
 });
 
-//delete invoiceid in the params
+//delete invoiceid in the params and all the foreign keys
 router.delete('/invoice/:invoiceid', async (req, res) => {
     try {
         const {invoiceid} = req.params;
-        const query = `DELETE FROM invoice WHERE id = '${invoiceid}'`;
+        //update the invoiceid with null in each response table with the invoiceid id
+        const query3 = `UPDATE response SET invoiceid = null WHERE invoiceid = '${invoiceid}'`;
+        const result3 = await client
+        .query
+        (query3);
+        
+        //delete all the foreign keys
+        const query = `DELETE FROM invoices WHERE id = '${invoiceid}'`;
         const result = await client
         .query
         (query);
         res.json(result.rows);
     } catch (e) {
         console.log(e)
-
         res.status(500).json({message: 'Something went wrong'});
     }
 });

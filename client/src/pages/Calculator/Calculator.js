@@ -5,7 +5,8 @@ import Form from './form'
 
 const Calculator = () => {
     return (
-        <div>
+        <div style={{direction: "rtl",
+            "text-align": "right"}} id="landing">
        <Nav/>
          <Form/>
        

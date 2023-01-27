@@ -1,14 +1,18 @@
 import React, { useState } from 'react'
 import img from '../../assets/icon.png'
+import { useNavigate } from 'react-router'
 const Button = (props) => {
+  const navigate = useNavigate()
+
     return (
-      <button className='bg-indigo-600 text-white font-[Poppins] py-2 px-6 rounded md:ml-8 hover:bg-indigo-400 
+      <button onClick={()=>navigate("/app")} className='bg-indigo-600 text-white font-[Poppins] py-2 px-6 rounded md:ml-8 hover:bg-indigo-400 
       duration-500'>
         {props.children}
       </button>
     )
   }
 const Nav = () => {
+    const navigate = useNavigate()
     let Links =[
       {name:"الرئيسية",link:"/"},
       {name:"من نحن",link:"/"},
@@ -41,7 +45,7 @@ const Nav = () => {
             </li>
           ))
         }
-        <Button>
+        <Button >
           الاعدادات
         </Button>
       </ul>

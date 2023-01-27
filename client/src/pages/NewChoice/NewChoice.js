@@ -140,7 +140,7 @@ const NewChoice = ({ inputs, title }) => {
               </div>
             ))}
         </div>
-      </div>                </div><div className="formInput" key={4}>
+      </div>          <button onClick={(e)=>{e.preventDefault();navigate("/NewUnit")}}>add new Unit</button>       </div><div className="formInput" key={4}>
                   <label>Variable</label>
                   <div className="search-container">
         <div className="search-inner">
