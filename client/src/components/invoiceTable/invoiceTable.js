@@ -25,10 +25,6 @@ const InvoiceTable = (props) => {
       .catch((err) => {
         console.log(err);
       });
-      //map all the element of data state
-      
-      //left everything here!!!
-      
       axios
       .get("http://localhost:3001/api/clients")
       .then((res) => {
@@ -40,15 +36,14 @@ const InvoiceTable = (props) => {
           date:"",
           pdflink:""
         }
-        res.data.map(element => {
-          for(let i = 0 ; i< res.data.length ; i++){
-            if (res.data[i].id === element.clientid){
-              setData(data.map((row) => ({ ...row, name: res.data[i].name })));
-            }
-          }
-          
-        });
-        setData(newData)
+        res.data.map((item)=>{
+          newData.id = item.id
+          newData.name = item.name
+          newData.phone = item.phone
+          newData.date = item.date
+          newData.pdflink = item.pdflink
+        })
+        setData(res.data)
         console.log(newData)
       })
       .catch((err) => {
@@ -96,7 +91,7 @@ const InvoiceTable = (props) => {
       renderCell: (params) => {
         return (
           <div className="cellAction">
-            <Link to="/users/test" style={{ textDecoration: "none" }}>
+            <Link to={"/users/"+params.row.id }style={{ textDecoration: "none" }}>
               <div className="viewButton">View</div>
             </Link>
             <div

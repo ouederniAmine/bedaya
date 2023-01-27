@@ -106,7 +106,7 @@ const Sidebar = () => {
           </span>
         </li> 
         <li 
-          key={3}
+          key={4}
           className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4 
          my-8"
             "bg-light-white"

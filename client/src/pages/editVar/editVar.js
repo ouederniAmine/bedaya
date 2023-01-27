@@ -82,7 +82,7 @@ const navigate = useNavigate();
       .put(`http://localhost:3001/api/operation/${selectedOption}` , variable)
       .then((res) => {
         console.log(res);
-        navigate("/app");
+        navigate("/variables");
       })
       
   };

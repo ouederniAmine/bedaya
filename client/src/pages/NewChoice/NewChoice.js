@@ -3,8 +3,10 @@ import Sidebar from "../../components/sidebar/sidebar";
 import Navbar from "../../components/navbar/navbar";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 import SearchBar from "../../components/searchBar/searchBar";
 const NewChoice = ({ inputs, title }) => {
+  const navigate = useNavigate();
   // get data from variable api endpoint
   const [data, setData] = useState([{ unitname: "loading"  , variablename: "loading"}]);
   const [unit, setUnit] = useState("");
@@ -75,6 +77,8 @@ const NewChoice = ({ inputs, title }) => {
     axios
       .post("http://localhost:3001/api/choice", variables)
       .then((res) => {
+        alert("Choice added successfully")
+        navigate("/questions");
         console.log(res);
       })
       .catch((err) => {

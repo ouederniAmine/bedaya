@@ -1,8 +1,45 @@
 import "./single.css";
 import Sidebar from "../../components/sidebar/sidebar"; 
 import Navbar from "../../components/navbar/navbar";
-
+import { useState ,  useEffect} from "react";
+import axios from "axios";
 const Single = () => {
+  const [data, setData] = useState({
+    id:0,
+    name:"", 
+    phone:"",
+    date:"",
+    pdflink:""
+  });
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/api/invoices")
+      .then((res) => {
+        setData(res.data);
+        })
+
+      .catch((err) => {
+        console.log(err);
+      });
+      axios
+      .get("http://localhost:3001/api/clients")
+      .then((res) => {
+        //get the invoice id from the url
+        let invoiceId = window.location.pathname.split("/")[2];
+        //get the invoice from the invoices array
+        let invoice = res.data.find((invoice) => invoice.id == invoiceId);
+   
+        setData(invoice)
+        console.log(invoice)
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+  }, []);
+
+
   return (
     <div className="single">
       <Sidebar />
@@ -16,26 +53,17 @@ const Single = () => {
               <div className="details">
               <div className="detailItem">
                   <span className="itemKey">Client Name:</span>
-                  <span className="itemValue">janedoe@gmail.com</span>
+                  <span className="itemValue">{data.name}</span>
                 </div>
                 <div className="detailItem">
-                  <span className="itemKey">Email:</span>
-                  <span className="itemValue">janedoe@gmail.com</span>
+                  <span className="itemKey">Date:</span>
+                  <span className="itemValue">{data.date}</span>
                 </div>
                 <div className="detailItem">
                   <span className="itemKey">Phone:</span>
-                  <span className="itemValue">+1 2345 67 89</span>
+                  <span className="itemValue">{data.phone}</span>
                 </div>
-                <div className="detailItem">
-                  <span className="itemKey">Address:</span>
-                  <span className="itemValue">
-                    Elton St. 234 Garden Yd. NewYork
-                  </span>
-                </div>
-                <div className="detailItem">
-                  <span className="itemKey">Country:</span>
-                  <span className="itemValue">USA</span>
-                </div>
+             
                 <button className="linkbu">PDF link</button>
               </div>
             </div>

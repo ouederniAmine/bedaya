@@ -76,7 +76,7 @@ const NewVar = ({ inputs, title }) => {
       .post("http://localhost:3001/api/variable", variable)
       .then((res) => {
         console.log(res);
-        navigate("/app");
+        navigate("/variables");
       })
       .catch((err) => {
         console.log(err);

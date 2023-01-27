@@ -69,22 +69,80 @@ router.post('/choice', async (req, res) => {
         res.status(500).json({message: 'Something went wrong'});
     }
 });
+// 
 
 router.post('/question', async (req, res) => {
     try {
-        // insert into table question the values of columns : text
-        const {text} = req.body;
-        const query = `INSERT INTO question (text) VALUES ('${text}')`;
+        // update table question the values of columns : text
+        const {text, choicesid} = req.body;
+        const query = `INSERT INTO question (text) VALUES ('${text}') RETURNING id`;
+        const result = await client
+        .query
+        (query);
+       //get the last id from the question table
+        const questionid = result.rows[0].id;
+        
+
+        //make an array of choiceids from choicesid
+        const choiceid = choicesid.split(',');
+        //update the questionid in each choice table with choiceid
+        for (let i = 0; i < choiceid.length; i++) {
+            const query = `UPDATE choice SET questionid = '${questionid}' WHERE id = ${choiceid[i]}`;
+            const result = await client
+            .query
+            (query);
+
+        }
+        const result1 = await client
+        .query
+        (query);
+        res.json(result1.rows);
+    } catch (e) {
+        console.log(e)  
+        res.status(500).json({message: 'Something went wrong'});
+    }
+});
+//put to question table
+router.put('/question', async (req, res) => {
+    try {
+        // update table question the values of columns : text
+        const {text, questionid, choicesid} = req.body;
+        const query = `UPDATE question SET text = '${text}' WHERE id = '${questionid}'`;
+        //make an array of choiceids from choicesid
+        const choiceid = choicesid.split(',');
+        //update the questionid in each choice table with choiceid
+        for (let i = 0; i < choiceid.length; i++) {
+            const query = `UPDATE choice SET questionid = '${questionid}' WHERE id = '${choiceid[i]}'`;
+            const result = await client
+            .query
+            (query);
+
+        }
+        const result = await client
+        .query
+        (query);
+        res.json(result.rows);
+    } catch (e) {
+        console.log(e)  
+        res.status(500).json({message: 'Something went wrong'});
+    }
+});
+//delete from question table
+router.delete('/question', async (req, res) => {
+    try {
+        // delete from table question the values of columns : text
+        const {id} = req.body;
+        const query = `DELETE FROM question WHERE id = '${id}'`;
         const result = await client
         .query
         (query);
         res.json(result.rows);
     } catch (e) {
         console.log(e)
-
         res.status(500).json({message: 'Something went wrong'});
     }
 });
+
 //get all the data from the table question
 router.get('/question', async (req, res) => {
     try {
@@ -224,9 +282,9 @@ router.put('/variableValue/:variableid', async (req, res) => {
 // update resultid in the params by operation var1id and var2id in the body of the request
 router.put('/operation/:resultid', async (req, res) => {
     try {
-        const {resultid} = req.params;
-        const {variable1id, variable2id, operationtype} = req.body;
-        const query = `UPDATE operation SET var1id = '${variable1id}', var2id = '${variable2id}', operationtype = '${operationtype}' WHERE resultid = '${resultid}'`;
+        const {operationtype} = req.params;
+        const {var1id, var2id, resultid} = req.body;
+        const query = `UPDATE operations SET var1id = '${var1id}', var2id = '${var2id}', operationtype = '${operationtype}' WHERE resultvarid = ${resultid}`;
         const result = await client
         .query
         (query);
@@ -237,6 +295,67 @@ router.put('/operation/:resultid', async (req, res) => {
     }
 });
 
+//delete variableid in the params
+router.delete('/variable/:variableid', async (req, res) => {
+    try {
+        const {variableid} = req.params;
+        const query = `DELETE FROM variable WHERE variableid = '${variableid}'`;
+        const result = await client
+        .query
+        (query);
+        res.json(result.rows);
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({message: 'Something went wrong'});
+    }
+});
+//delete factorid in the params
+router.delete('/factor/:factorid', async (req, res) => {
+    try {
+        const {factorid} = req.params;
+
+        const query = `DELETE FROM factor WHERE factorid = '${factorid}'`;
+        const result = await client
+        .query
+        (query);
+        res.json(result.rows);
+    } catch (e) {
+
+        console.log(e)
+        res.status(500).json({message: 'Something went wrong'});
+    }
+});
+
+//delete questionid in the params
+router.delete('/question/:questionid', async (req, res) => {
+    try {
+        const {questionid} = req.params;
+        const query = `DELETE FROM question WHERE questionid = '${questionid}'`;
+        const result = await client
+        .query
+        (query);
+        res.json(result.rows);
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({message: 'Something went wrong'});
+    }
+});
+
+//delete invoiceid in the params
+router.delete('/invoice/:invoiceid', async (req, res) => {
+    try {
+        const {invoiceid} = req.params;
+        const query = `DELETE FROM invoice WHERE invoiceid = '${invoiceid}'`;
+        const result = await client
+        .query
+        (query);
+        res.json(result.rows);
+    } catch (e) {
+        console.log(e)
+
+        res.status(500).json({message: 'Something went wrong'});
+    }
+});
 
 
 //post to variable table
@@ -423,7 +542,7 @@ router.get('/fullChoice', async (req, res) => {
 router.get('/fullResponse', async (req, res) => {
     try {
        //sql query to get all data from response table with the join of  foreign keys to question table ,choice table and  invoices table
-        const query = `SELECT  choice.uservalue as value,  response.id as responseID, response.questionid as questionID, response.choiceid as choiceID, response.invoiceid as invoiceID, question.text as questionName, choice.name as choiceName FROM response JOIN question ON response.questionid = question.id JOIN choice ON response.choiceid = choice.id JOIN invoices ON response.invoiceid = invoices.id`;
+        const query = `SELECT  choice.uservalue as value, question.id as id, response.id as responseID, variable.name as variableName,response.questionid as questionID, response.choiceid as choiceID, response.invoiceid as invoiceID, question.text as questionName, choice.name as choiceName FROM response JOIN question ON response.questionid = question.id JOIN choice ON response.choiceid = choice.id JOIN invoices ON response.invoiceid = invoices.id JOIN variable on choice.variableid = variable.id`;
         const result = await client
         .query
         (query);
@@ -433,5 +552,18 @@ router.get('/fullResponse', async (req, res) => {
         res.status(500).json({message: 'Something went wrong'});
     }
 });
+router.get('/fullVariable', async (req, res) => {
+    try {
+        //sql query to get all data from variable table with the join of  foreign keys to unit table
+        const query = `SELECT variable.id as id, variable.name as variableName, variable.unitid as unitID, unit.name as unitName FROM variable JOIN unit ON variable.unitid = unit.id`;
+        const result = await client
+        .query
+        (query);
+        res.json(result.rows);
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({message: 'Something went wrong'});
+    }
 
+});
 module.exports = router;

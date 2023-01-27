@@ -5,53 +5,74 @@ import { Link } from "react-router-dom";
 import { useState , useEffect} from "react";
 import axios from "axios";
 const QuestionTable = (props) => {
-  const [data, setData] = useState({});
+  const [data, setData] = useState({
+    id:0,
+    questionname:"", 
+    choicename:"",
+    variablename:"",
+    pdflink:""
+  });
   const userColumns = [
     { field: "id", headerName: "ID", width: 70 },
     
     {
-      field: "questionText",
+      field: "questionname",
       headerName: "Question",
       width: 230,
     },
   
     {
-      field: "choice",
+      field: "choicename",
       headerName: "Choice",
       width: 100,
     },
     {
-      field: "variable",
+      field: "variablename",
       headerName: "Variable",
       width: 100,
     }
    
   ];
-  const rows = [
-    { id: 1, col1: 'Hello', col2: 'World' },
-    { id: 2, col1: 'DataGridPro', col2: 'is Awesome' },
-    { id: 3, col1: 'MUI', col2: 'is Amazing' },
-  ];
-  
-  const columns = [
-    { field: 'col1', headerName: 'Column 1', width: 150 },
-    { field: 'col2', headerName: 'Column 2', width: 150 },
-  ];
-  // get the variable list from server
+
+  // get the questions list from server
   useEffect(() => {
     axios
-      .get("http://localhost:3001/api/variable")
+      .get("http://localhost:3001/api/fullResponse")
       .then((res) => {
+        // map the data from response to the table
+        let newData = {
+          id:0,
+          questionname:"", 
+          choicename:"",
+          variablename:"",
+          pdflink:""
+        }
+        res.data.map((item)=>{
+          newData.id = item.questionid
+          newData.questionname = item.questionname
+          newData.variablename = item.variablename
+          newData.choicename = item.choicename
+          newData.pdflink = item.pdflink
+        })
         setData(res.data);
         console.log(res.data);
-        console.log(data);
-      })
+            })
       .catch((err) => {
         console.log(err);
       });
   }, []);
 
   const handleDelete = (id) => {
+    // delete the question from server
+    axios
+      .delete("http://localhost:3001/api/question/" + id)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
     setData(data.filter((item) => item.id !== id));
   };
   console.log(window.location.href.split("/").pop()+"/new");
