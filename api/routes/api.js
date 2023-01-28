@@ -635,7 +635,7 @@ router.get('/fullChoice', async (req, res) => {
 router.get('/fullQuestion', async (req, res) => {
     try {
         // get all the question ids  and names only from question Table and put them in an array
-        const query = `SELECT id, text FROM question where text != ''`;
+        const query = `SELECT id, text , variableid FROM question where text != ''`;
         const questionIDs = await client
         .query
         (query);
@@ -656,11 +656,12 @@ router.get('/fullQuestion', async (req, res) => {
             const format = {
                 questionID: '',
                 questionName: '',
+                var1id: 0,
                 choices: []
             }
             format.questionID = questionIDs.rows[i].id;
             format.questionName = questionIDs.rows[i].text;
-            console.log(choices[i]);
+            format.var1id = questionIDs.rows[i].variableid;
             format.choices = choices[i];
             questions.push(format);
         }
@@ -700,4 +701,21 @@ router.get('/fullVariable', async (req, res) => {
     }
 
 });
+
+router.post('/vartoquest', async (req, res) => {
+    try {
+        //insert into question table text and variableid
+        const {text, variableid} = req.body;
+        const query = `INSERT INTO question (text, variableid) VALUES ('${text}', '${variableid}')`;
+        const result = await client
+        .query
+        (query);
+        res.json(result.rows);
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({message: 'Something went wrong'});
+    }
+});
+
+
 module.exports = router;

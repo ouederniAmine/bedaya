@@ -5,7 +5,7 @@ import "./Calculator.css"
 import axios from "axios";
 import { chainPropTypes } from '@mui/utils';
 const Form = () => {
-    const [data, setData] = useState([{}])
+    const [data, setData] = useState([{questionName : "" , varid: 0,  choices : [{name : ""}]}])
     const [formData, setFormData] = useState(0);
     useEffect(() => {
         axios
@@ -16,44 +16,49 @@ const Form = () => {
         } , [])
     return (
 
-<div class="flex items-center justify-center p-12">
+<div className="flex items-center justify-center p-12">
     
-  <div class=" w-full max-w-[1300px]">
+  <div className=" w-full max-w-[1300px]">
   <h1 id='head'>حساب تكلفة التشطيب الإجمالية للسكن المطلوب بشكل تقريبي</h1>
 
     <form action="https://formbold.com/s/FORM_ID" method="POST">
-        {data.map((item) => {
-          console.log(item )
-            return (
-                <div class="mb-5">
-                <label
-                  for="guest"
-                  class="mb-3 block text-base font-medium text-[#07074D]"
-                >
-               {item.questionName}
-                </label>
-                <select id="countries" class=" border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
-                  {
-                    item.choices.map((choice)=>{
-                      return(
-                        <option value={choice.name}>{choice.name}</option>
-                      )
-                    })
-                  }
+        {data.map((item , i) => {
+           
+           if(item.var1id === null) { return( <div class="mb-5" >
+        <label
+          for="guest"
+          className="mb-3 block text-base font-medium text-[#07074D]"
+        >
+       {item.questionName}
+        </label>
+        <select key={i} id="countries" className=" border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
+          {
+            item.choices.map((choice)=>{
+              return(
+                <option value={choice.name}>{choice.name}</option>
+              )
+            })
+          }
 </select>
-              </div> 
-            )
-        })}
+      </div> )}else{
+            return( <div class="mb-5" >
+            <label
+              for="guest"
+              className="mb-3 block text-base font-medium text-[#07074D]"
+            >
+           {item.questionName}
+            </label>
+            <input type="number" id="default-input" className="border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "/>
 
+          </div> )
+      }
         
-
- 
-
-  
-
+               
+            
+        })}
       <div>
         <button
-          class="hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none"
+          className="hover:shadow-form rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none"
         >
           حساب تكلفة التشطيب
         </button>

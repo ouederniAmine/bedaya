@@ -13,7 +13,7 @@ const EditVar = ({ inputs, title }) => {
   const[id1, Setid1] = useState(1);
   const [value2, setValue2] = useState("");
   //state for the select
-  const [selectedOption, setSelectedOption] = useState("+");
+  const [selectedOption, setSelectedOption] = useState("+ ");
 
   
 const navigate = useNavigate();
