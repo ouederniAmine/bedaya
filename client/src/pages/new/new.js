@@ -12,7 +12,7 @@ const New = ({ inputs, title }) => {
   const [value2, setValue2] = useState("");
   const [choices, setChoices] = useState([{name : "" , id:0}]);
   const navigate = useNavigate();
-
+  const [questionid , setQuestionid] = useState(0);
   const onChange = (event , choix) => {
       setValue1(event.target.value);
   
@@ -32,8 +32,23 @@ const New = ({ inputs, title }) => {
     //push to the state choices
     setChoices([...choices, {name : searchTerm , id:choiceid}]);
     // our api to fetch the search result
-    console.log("search ", searchTerm);
   };
+  //handle new choice
+  const handleNewChoice = (e) => {
+
+    e.preventDefault();
+   
+    axios
+      .post("http://localhost:3001/api/newQuestionChoice")
+      .then((res) => {
+        console.log(res.data);
+        navigate("/newChoice/" + res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   useEffect(() => {
     axios
       .get("http://localhost:3001/api/choice")
@@ -44,17 +59,9 @@ const New = ({ inputs, title }) => {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
-  useEffect(() => {
-    axios
-      .get("http://localhost:3001/api/choice")
-      .then((res) => {
-        setData(res.data); 
-        
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+
+    
+
   }, []);
   // handle the submit button
   const handleSubmit = (e) => {
@@ -68,7 +75,6 @@ const New = ({ inputs, title }) => {
     }
     //format choicesid to be a string
     const choicesids = choicesid.toString();
-  console.log(choicesids)
 
     const variable = {
       choicesid: choicesids,
@@ -77,12 +83,21 @@ const New = ({ inputs, title }) => {
     axios
       .post("http://localhost:3001/api/question", variable)
       .then((res) => {
-        console.log(res);
         navigate("/questions");
       })
       .catch((err) => {
         console.log(err);
       });
+      axios
+      .delete("http://localhost:3001/api/emptyquestion")
+      .then((res) => {
+        console.log(res.data);
+      }
+      )
+      .catch((err) => {
+        console.log(err);
+      }
+      );
   };
   
 
@@ -114,7 +129,6 @@ const New = ({ inputs, title }) => {
             .filter((item) => {
               const searchTerm = value1.toLowerCase();
               const fullName = item.name.toLowerCase();
-              console.log(item);
 
               return (
                 searchTerm &&
@@ -133,9 +147,9 @@ const New = ({ inputs, title }) => {
               </div>
             ))}
         </div>
-      </div>                       <button onClick={(e)=>{e.preventDefault();navigate("/newChoice/1")}}>add answer</button>
+      </div>                  
       <br></br>
-      <button onClick={(e)=>{e.preventDefault();navigate("/newChoice/1")}}>add new answer</button>
+      <button onClick={handleNewChoice}>add new answer</button>
                 </div>
               <div>
                 <label>Question Choices:</label>
@@ -148,9 +162,6 @@ const New = ({ inputs, title }) => {
                       );
                     })
                 }
-        
-
-                
               </div>
               <button onClick={handleSubmit}>Send</button>
             </form>

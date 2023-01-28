@@ -17,6 +17,14 @@ const EditQuestion = ({ inputs, title }) => {
       setValue1(event.target.value);
   
   };
+  const handleNewChoice = (e) => {
+    e.preventDefault();
+    const url = window.location.href;
+    const urlParts = url.split("/");
+    const questionid = urlParts[urlParts.length - 1];
+    navigate("/newChoice/" + questionid);
+    
+  };
 
   const onSearch = (searchTerm ,choix) => {
     if (choix == 1) {
@@ -80,6 +88,16 @@ const EditQuestion = ({ inputs, title }) => {
       .catch((err) => {
         console.log(err);
       });
+      axios
+      .delete("http://localhost:3001/api/emptyquestion")
+      .then((res) => {
+        console.log(res.data);
+      }
+      )
+      .catch((err) => {
+        console.log(err);
+      }
+      );
   };
   
 
@@ -95,7 +113,6 @@ const EditQuestion = ({ inputs, title }) => {
           
           <div className="right">
             <form>
-                          
                 <div className="formInput" key={0}>
                   <label>Question Text</label>
                   <input type="text" onChange={(e)=>{e.preventDefault(); setValue2(e.target.value)}} placeholder="Enter your question text : " />
@@ -130,9 +147,9 @@ const EditQuestion = ({ inputs, title }) => {
               </div>
             ))}
         </div>
-      </div>                       <button onClick={(e)=>{e.preventDefault();navigate("/newChoice/1")}}>add answer</button>
+      </div>                       
       <br></br>
-      <button onClick={(e)=>{e.preventDefault();navigate("/newChoice/1")}}>add new answer</button>
+      <button onClick={handleNewChoice}>add new answer</button>
                 </div>
               <div>
                 <label>Question Choices:</label>
@@ -145,9 +162,6 @@ const EditQuestion = ({ inputs, title }) => {
                       );
                     })
                 }
-        
-
-                
               </div>
               <button onClick={handleSubmit}>Send</button>
             </form>

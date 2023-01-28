@@ -5,6 +5,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import SearchBar from "../../components/searchBar/searchBar";
+import { Checkbox } from "@mui/material";
 const NewVar = ({ inputs, title }) => {
   // get data from variable api endpoint
 
@@ -16,6 +17,7 @@ const NewVar = ({ inputs, title }) => {
   const [var1name , setVar1name] = useState([{name: "loading"}]);
   const [var2name , setVar2name] = useState([{name: "loading"}]);
   const [unitname , setUnitname] = useState([{name: "loading"}]);
+  const [edit , setEdit] = useState(false);
   //state of var name
   const [varname, setVarname] = useState("");
   //state of operation type
@@ -85,29 +87,49 @@ const NewVar = ({ inputs, title }) => {
     console.log(e.target);
     console.log("form submitted");
     //get id from data where name = unitname
-    const unitid = unitname.find((element) => element.name == value3).id;
-    const var2id = var2name.find((element) => element.name == value2).id;
-    const var1id = var1name.find((element) => element.name == value1).id;
+    if (edit){
+      const unitid = unitname.find((element) => element.name == value3).id;
+      const var2id = var2name.find((element) => element.name == value2).id;
+      const var1id = var1name.find((element) => element.name == value1).id;
+  
+  
+      const variable = {
+        name:varname,
+        value: 0,
+        var1id: var1id,
+        unitid: unitid,
+        var2id: var2id,
+        operationtype: operationtype,
+      };
+      axios
+        .post("http://localhost:3001/api/variable", variable)
+        .then((res) => {
+          console.log(res);
+          
+          navigate("/variables");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
 
-
-    const variable = {
-      name:varname,
-      value: 0,
-      var1id: var1id,
-      unitid: unitid,
-      var2id: var2id,
-      operationtype: operationtype,
-    };
-    axios
-      .post("http://localhost:3001/api/variable", variable)
-      .then((res) => {
-        console.log(res);
-        
-        navigate("/variables");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    }else{
+      const unitid = unitname.find((element) => element.name == value3).id;
+      const variable = {
+        name:varname,
+        value: 0,
+        unitid: unitid,
+      };
+      axios
+        .post("http://localhost:3001/api/simplevariable", variable)
+        .then((res) => {
+          console.log(res);
+          navigate("/variables");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  
 
   };
 
@@ -130,7 +152,15 @@ const NewVar = ({ inputs, title }) => {
                   </label>
                   <input className="formInput" type="text" onChange={(e)=>{setVarname(e.target.value)}}></input>
                 </div>
-              
+                <div className="formInput" key={1}>
+                  <label>Has operation ? </label>
+                  <Checkbox onChange={(e)=>setEdit(!edit)}></Checkbox>
+                </div>
+
+                {//render when edit is true
+                edit &&
+                
+                <div>
                 <div className="formInput" key={2}>
                   
                   <label>Operation Type</label>
@@ -206,6 +236,7 @@ const NewVar = ({ inputs, title }) => {
             ))}
         </div>
       </div>                       </div>
+      </div>}
       <div className="formInput" key={7}>
                   <label>Unit</label>
                   <div className="search-container">

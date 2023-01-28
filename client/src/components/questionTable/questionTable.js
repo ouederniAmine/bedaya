@@ -8,9 +8,7 @@ const QuestionTable = (props) => {
   const [data, setData] = useState({
     id:0,
     questionname:"", 
-    choicename:"",
-    variablename:"",
-    pdflink:""
+    choicename:""
   });
   const userColumns = [
     { field: "id", headerName: "ID", width: 70 },
@@ -24,38 +22,39 @@ const QuestionTable = (props) => {
     {
       field: "choicename",
       headerName: "Choice",
-      width: 100,
-    },
-    {
-      field: "variablename",
-      headerName: "Variable",
-      width: 100,
+      width: 400,
     }
-   
   ];
 
   // get the questions list from server
   useEffect(() => {
     axios
-      .get("http://localhost:3001/api/fullResponse")
+      .get("http://localhost:3001/api/fullQuestion")
       .then((res) => {
-        // map the data from response to the table
-        let newData = {
-          id:0,
-          questionname:"", 
-          choicename:"",
-          variablename:"",
-          pdflink:""
-        }
+        //change the data to fit the data grid and set the data
+      
+        let data =[]
         res.data.map((item)=>{
-          newData.id = item.questionid
-          newData.questionname = item.questionname
-          newData.variablename = item.variablename
-          newData.choicename = item.choicename
-          newData.pdflink = item.pdflink
+          let newData = {
+            id:0,
+            questionname:"",
+            choicename:""
+          }
+          console.log(item)
+          newData.id = item.questionID
+          newData.questionname = item.questionName
+          // format the choices to be a string
+          let choices = ""
+          for (let i = 0; i < item.choices.length; i++) {
+            choices += item.choices[i].name + ",";
+          }
+          newData.choicename = choices
+
+          data.push(newData)
         })
-        setData(res.data);
-        console.log(res.data);
+        
+        setData(data);
+        
             })
       .catch((err) => {
         console.log(err);

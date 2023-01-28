@@ -4,11 +4,8 @@ import Navbar from "../../components/navbar/navbar";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import SearchBar from "../../components/searchBar/searchBar";
 const NewChoice = ({ inputs, title }) => {
   const navigate = useNavigate();
-  // get data from variable api endpoint
-  const [data, setData] = useState([{ unitname: "loading"  , variablename: "loading"}]);
   const [unit, setUnit] = useState("");
   const [unitName , setUnitName] = useState([{ name: "loading"  , variablename: "loading"}]);
   const [variableName , setVariableName] = useState([{ name: "loading"  , variablename: "loading"}]);
@@ -71,15 +68,13 @@ const NewChoice = ({ inputs, title }) => {
       if (unitName[i].name === unit ) {
         unitid = unitName[i].id;
       }
-      console.log(variableName[i]);
-      if (variableName[i].name == variable) {
+    }
+    for (let i = 0; i < variableName.length; i++) {
+      if (variableName[i].name === variable ) {
         variableid = variableName[i].id;
       }
     }
      console.log(unitid," unitid");
-
-    
-    
     const variables = {
       name: choiceName,
       uservalue: 0,
@@ -92,7 +87,7 @@ const NewChoice = ({ inputs, title }) => {
       .post("http://localhost:3001/api/choice", variables)
       .then((res) => {
         alert("Choice added successfully")
-        navigate("/questions");
+        navigate("/questions/edit/"+ questionid );
         console.log(res);
       })
       .catch((err) => {

@@ -102,6 +102,23 @@ router.post('/question', async (req, res) => {
         res.status(500).json({message: 'Something went wrong'});
     }
 });
+router.post('/newQuestionChoice', async (req, res) => {
+    try {
+        // insert into table question a null text and return the id
+        const query = `INSERT INTO question (text) VALUES (null) RETURNING id`;
+        const result = await client
+        .query
+        (query);
+        //get the last id from the question table
+        const questionid = result.rows[0].id;
+        //return the questionid
+        res.json(questionid);
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({message: 'Something went wrong'});
+    }
+});
+
 //put to question table
 router.put('/question', async (req, res) => {
     try {
@@ -144,6 +161,43 @@ router.delete('/question/:id', async (req, res) => {
         .query
         (query2);
         const query = `DELETE FROM question WHERE id = '${id}'`;
+        const result = await client
+        .query
+        (query);
+        res.json(result.rows);
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({message: 'Something went wrong'});
+    }
+});
+router.delete('/emptyquestion', async (req, res) => {
+    try {
+        // delete from table question the values of columns : text
+        //get the id from the
+        const {id} = req.params;
+        //get an array of questionid with null text
+        const query5 = `SELECT id FROM question WHERE text is null`;
+        const result5 = await client
+        .query
+        (query5);
+
+        //update the questionid with null in each choice table with the question id from the array
+        for (let i = 0; i < result5.rows.length; i++) {
+            const query1 = `UPDATE choice SET questionid = null WHERE questionid = '${result5.rows[i].id}'`;
+            const result1 = await client
+            .query
+            (query1);
+        }
+
+        //update the questionid with null in each response table with the question id from the array
+        for (let i = 0; i < result5.rows.length; i++) {
+            const query2 = `UPDATE response SET questionid = null WHERE questionid = '${result5.rows[i].id}'`;
+            const result2 = await client
+            .query
+            (query2);
+        }
+        //delete the question with null text
+        const query = `DELETE FROM question WHERE text is null`;
         const result = await client
         .query
         (query);
@@ -409,6 +463,23 @@ router.post('/variable', async (req, res) => {
 
     }
 });
+//post simple variable
+router.post('/simplevariable', async (req, res) => {
+    try {
+        // insert into table variable the values of columns : name, factorid, value
+        const {name,  value, unitid} = req.body;
+        console.log(name , factorid, value, unitid);
+        const query = `INSERT INTO variable (name, factorid, value, unitid) VALUES ('${name}', null, ${value}, ${unitid})`;
+        const result = await client
+        .query
+        (query);
+        res.json(result.rows);
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({message: 'Something went wrong'});
+    }
+});
+
 //get all data from variable table
 router.get('/variable', async (req, res) => {
     try {
@@ -555,6 +626,46 @@ router.get('/fullChoice', async (req, res) => {
         .query
         (query);
         res.json(result.rows);
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({message: 'Something went wrong'});
+    }
+});
+//get full question table with the join of  foreign keys to variable table and unit table
+router.get('/fullQuestion', async (req, res) => {
+    try {
+        // get all the question ids  and names only from question Table and put them in an array
+        const query = `SELECT id, text FROM question where text != ''`;
+        const questionIDs = await client
+        .query
+        (query);
+        console.log(questionIDs.rows);
+        // get each choice that have the same question id from choice table and put them in an array
+        const choices = [];
+        for (let i = 0; i < questionIDs.rows.length; i++) {
+            const query2 = `SELECT * FROM choice WHERE questionid = '${questionIDs.rows[i].id}'`;
+            const result2 = await client
+            .query
+            (query2);
+            choices.push(result2.rows);
+        }
+
+       
+        const questions = [];
+        for (let i = 0; i < questionIDs.rows.length; i++) {
+            const format = {
+                questionID: '',
+                questionName: '',
+                choices: []
+            }
+            format.questionID = questionIDs.rows[i].id;
+            format.questionName = questionIDs.rows[i].text;
+            console.log(choices[i]);
+            format.choices = choices[i];
+            questions.push(format);
+        }
+       
+        res.json(questions);
     } catch (e) {
         console.log(e)
         res.status(500).json({message: 'Something went wrong'});
