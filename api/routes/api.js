@@ -717,5 +717,34 @@ router.post('/vartoquest', async (req, res) => {
     }
 });
 
+// get the two variables from the body and make the operation and update the result in the variable table
+
+router.post('/operation', async (req, res) => {
+    try {
+        const {var1id, var2id, resultid} = req.body;
+        //get the two variables from the body and make the operation and update the result in the variable table
+        const query = `SELECT * FROM variable WHERE id = '${var1id}'`;
+        const result = await client
+        .query
+        (query);
+        const query2 = `SELECT * FROM variable WHERE id = '${var2id}'`;
+        const result2 = await client
+        .query
+        (query2);
+        const query3 = `SELECT * FROM variable WHERE id = '${resultid}'`;
+        const result3 = await client
+        .query
+        (query3);
+        const query4 = `UPDATE variable SET value = '${result.rows[0].value + result2.rows[0].value}' WHERE id = '${resultid}'`;
+        const result4 = await client
+        .query
+        (query4);
+        res.json(result4.rows);
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({message: 'Something went wrong'});
+    }
+});
+
 
 module.exports = router;
